@@ -9,31 +9,27 @@ const answer = sample(WORDS);
 // To make debugging easier, we'll log the solution in the console.
 console.info({ answer });
 
+function Game() {
+  const arr = range(0, 6, 1);
+  const [list, setState] = React.useState(arr);
 
-function GuessInput({ sendGuessValue }) {
-  const [guess, setState] = React.useState("");
-
-  function getInputText(event) {
-    const text = event.target.value;
-    if (text.length > 5) {
-      return;
-    }
-    setState(text);
-    if (text.length === 5) {
-      sendGuessValue(text);
-      setState("");
-    }
+  function handleGuessValue(data) {
+    setState((prevItems) => {
+      const newItems = [...prevItems];
+      for (let i = 0; i < newItems.length; i++) {
+        if (newItems[i] === i) {
+          newItems[i] = data;
+          break;
+        }
+      }
+      return newItems;
+    });
   }
   return (
-    <form className="guess-input-wrapper">
-      <label htmlFor="guess-input">Enter guess:</label>
-      <input
-        id="guess-input"
-        type="text"
-        onInput={getInputText}
-        value={guess}
-      />
-    </form>
+    <div>
+      <Guess value={list}></Guess>
+      <GuessInput sendGuessValue={handleGuessValue}></GuessInput>
+    </div>
   );
 }
 
@@ -75,27 +71,30 @@ function Guess(props) {
 }
 
 
-function Game() {
-  const arr = range(0, 6, 1);
-  const [list, setState] = React.useState(arr);
+function GuessInput({ sendGuessValue }) {
+  const [guess, setState] = React.useState("");
 
-  function handleGuessValue(data) {
-    setState((prevItems) => {
-      const newItems = [...prevItems];
-      for (let i = 0; i < newItems.length; i++) {
-        if (newItems[i] === i) {
-          newItems[i] = data;
-          break;
-        }
-      }
-      return newItems;
-    });
+  function getInputText(event) {
+    const text = event.target.value;
+    if (text.length > 5) {
+      return;
+    }
+    setState(text);
+    if (text.length === 5) {
+      sendGuessValue(text);
+      setState("");
+    }
   }
   return (
-    <div>
-      <Guess value={list}></Guess>
-      <GuessInput sendGuessValue={handleGuessValue}></GuessInput>
-    </div>
+    <form className="guess-input-wrapper">
+      <label htmlFor="guess-input">Enter guess:</label>
+      <input
+        id="guess-input"
+        type="text"
+        onInput={getInputText}
+        value={guess}
+      />
+    </form>
   );
 }
 
