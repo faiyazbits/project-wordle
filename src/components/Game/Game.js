@@ -12,8 +12,23 @@ console.info({ answer });
 function Game() {
   const arr = range(0, 6, 1);
   const [list, setState] = React.useState(arr);
+  let [isSuccess, setFlag] = React.useState(false);
+  let [isSadBanner, setBadFlag] = React.useState(false);
+  let [count, setCount] = React.useState(0);
+  const succesName = "happy banner";
+  const sadClassName = "sad banner";
+  const noDisplay = "display-visible";
 
   function handleGuessValue(data) {
+    if (data.length) {
+      let value = count + 1;
+      let isBad = value === 6 ? list.every((ele) => ele !== answer) : false;
+      setCount(value);
+      setBadFlag(isBad);
+      setTimeout(() => {
+        setBadFlag(false);
+      }, 3000);
+    }
     setState((prevItems) => {
       const newItems = [...prevItems];
       for (let i = 0; i < newItems.length; i++) {
@@ -25,18 +40,34 @@ function Game() {
       return newItems;
     });
   }
+
+  function handleBanner(value) {
+    setFlag(value);
+  }
+
   return (
     <div>
-      <Guess value={list}></Guess>
+      <Guess value={list} sendSuccessToaster={handleBanner}></Guess>
       <GuessInput sendGuessValue={handleGuessValue}></GuessInput>
+      <div className={`${isSuccess ? succesName : noDisplay}`}>
+        <p>
+          <strong>Congratulations!</strong> Got it in
+          <strong> {count} guesses</strong>.
+        </p>
+      </div>
+      <div className={`${isSadBanner ? sadClassName : noDisplay}`}>
+        <p>
+          Sorry, the correct answer is <strong>{answer}</strong>.
+        </p>
+      </div>
     </div>
   );
 }
 
-
 function Guess(props) {
   const list = props.value;
   console.log(list);
+  const { sendSuccessToaster } = props;
   return (
     <div className="guess-results">
       {list.map((element, index) => {
@@ -46,30 +77,37 @@ function Guess(props) {
           result = checkGuess(word, answer);
         }
         console.log(result);
+        let isSuccess = false;
+        if (result.length) {
+          isSuccess = result.every((ele, element) => ele.status === "correct");
+          sendSuccessToaster(isSuccess);
+        }
+        setTimeout(() => {
+          sendSuccessToaster(false);
+        }, 1000);
         return (
-            <p className="guess" key={index}>
-              <span className={`cell ${result[0]?.status}`}>
-                {result[0]?.letter}
-              </span>
-              <span className={`cell ${result[1]?.status}`}>
-                {result[1]?.letter}
-              </span>
-              <span className={`cell ${result[2]?.status}`}>
-                {result[2]?.letter}
-              </span>
-              <span className={`cell ${result[3]?.status}`}>
-                {result[3]?.letter}
-              </span>
-              <span className={`cell ${result[4]?.status}`}>
-                {result[4]?.letter}
-              </span>
-            </p>
+          <p className="guess" key={index}>
+            <span className={`cell ${result[0]?.status}`}>
+              {result[0]?.letter}
+            </span>
+            <span className={`cell ${result[1]?.status}`}>
+              {result[1]?.letter}
+            </span>
+            <span className={`cell ${result[2]?.status}`}>
+              {result[2]?.letter}
+            </span>
+            <span className={`cell ${result[3]?.status}`}>
+              {result[3]?.letter}
+            </span>
+            <span className={`cell ${result[4]?.status}`}>
+              {result[4]?.letter}
+            </span>
+          </p>
         );
       })}
     </div>
   );
 }
-
 
 function GuessInput({ sendGuessValue }) {
   const [guess, setState] = React.useState("");
@@ -98,4 +136,25 @@ function GuessInput({ sendGuessValue }) {
   );
 }
 
+function HappyBanner() {
+  return (
+    <div className="happy banner">
+      <p>
+        <strong>Congratulations!</strong> Got it in
+        <strong>3 guesses</strong>.
+      </p>
+    </div>
+  );
+}
+
+function SadBanner() {
+  return (
+    <div className="happy banner">
+      <p>
+        <strong>Congratulations!</strong> Got it in
+        <strong>3 guesses</strong>.
+      </p>
+    </div>
+  );
+}
 export default Game;
