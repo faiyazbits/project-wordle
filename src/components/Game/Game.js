@@ -11,7 +11,7 @@ console.info({ answer });
 
 function Game() {
   const arr = range(0, 6, 1);
-  const [list, setState] = React.useState(arr);
+  const [list, setList] = React.useState(arr);
   let [isSuccess, setFlag] = React.useState(false);
   let [isSadBanner, setBadFlag] = React.useState(false);
   let [count, setCount] = React.useState(0);
@@ -20,22 +20,25 @@ function Game() {
   const noDisplay = "display-visible";
 
   function handleGuessValue(data) {
-    if (data.length) {
-      let value = count + 1;
-      let isBad = value === 6 ? list.every((ele) => ele !== answer) : false;
-      setCount(value);
-      setBadFlag(isBad);
-      setTimeout(() => {
-        setBadFlag(false);
-      }, 3000);
-    }
-    setState((prevItems) => {
+    setList((prevItems) => {
       const newItems = [...prevItems];
       for (let i = 0; i < newItems.length; i++) {
         if (newItems[i] === i) {
           newItems[i] = data;
           break;
         }
+      }
+      if (data.length) {
+        let value = count + 1;
+        let isBad =
+          value === 6
+            ? newItems.every((ele) => ele.toUpperCase() !== answer)
+            : false;
+        setCount(value);
+        setBadFlag(isBad);
+        setTimeout(() => {
+          setBadFlag(false);
+        }, 5000);
       }
       return newItems;
     });
@@ -49,17 +52,22 @@ function Game() {
     <div>
       <Guess value={list} sendSuccessToaster={handleBanner}></Guess>
       <GuessInput sendGuessValue={handleGuessValue}></GuessInput>
+      <VisualKeyboard input={list}></VisualKeyboard>
+
       <div className={`${isSuccess ? succesName : noDisplay}`}>
         <p>
           <strong>Congratulations!</strong> Got it in
           <strong> {count} guesses</strong>.
         </p>
       </div>
+
       <div className={`${isSadBanner ? sadClassName : noDisplay}`}>
         <p>
           Sorry, the correct answer is <strong>{answer}</strong>.
         </p>
       </div>
+
+      <Refresh sBanner={isSuccess} fBanner={isSadBanner}></Refresh>
     </div>
   );
 }
@@ -84,7 +92,7 @@ function Guess(props) {
         }
         setTimeout(() => {
           sendSuccessToaster(false);
-        }, 1000);
+        }, 3000);
         return (
           <p className="guess" key={index}>
             <span className={`cell ${result[0]?.status}`}>
@@ -136,25 +144,45 @@ function GuessInput({ sendGuessValue }) {
   );
 }
 
-function HappyBanner() {
+function VisualKeyboard(props) {
+  const inputWords = props.input.filter((word) => word.length > 4);
+  const keyboardKeys = ["QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM"];
+
+  function getClassName(char) {
+    let results = inputWords.map((element) => {
+      return checkGuess(element, answer);
+    });
+    const infoList = results.flat().filter((result) => result.letter === char);
+    const info = infoList.length ? infoList[infoList.length - 1] : {};
+    return info ? info.status : "";
+  }
+
   return (
-    <div className="happy banner">
-      <p>
-        <strong>Congratulations!</strong> Got it in
-        <strong>3 guesses</strong>.
-      </p>
+    <div className="visual-keyboard">
+      {keyboardKeys.map((element, index) => {
+        return (
+          <div key={index} className={`row row-${index}`}>
+            {[...element].map((ele, ix) => {
+              const status = getClassName(ele);
+              return (
+                <span key={ix} className={`key-cell cell ${status}`}>
+                  {ele}
+                </span>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 }
 
-function SadBanner() {
-  return (
-    <div className="happy banner">
-      <p>
-        <strong>Congratulations!</strong> Got it in
-        <strong>3 guesses</strong>.
-      </p>
-    </div>
-  );
+function Refresh(props) {
+  if (props.sBanner || props.fBanner) {
+    setTimeout(() => {
+      location.reload();
+    }, 4000);
+  }
 }
+
 export default Game;

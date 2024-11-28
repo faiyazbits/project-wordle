@@ -221,6 +221,35 @@ h1 {
 .display-visible {
   display: none;
 }
+.key-box {
+  padding: 10px;
+  border: 2px solid black;
+  color: black;
+  background-color: azure;
+}
+
+.row {
+  display: flex;
+  justify-content: center;
+}
+.row-0 {
+  margin: 15px;
+}
+.row-1 {
+  margin-inline: 30px;
+}
+.row-2 {
+  margin-inline: 45px;
+  padding: 16px;
+}
+
+.key-cell {
+  border: 2px solid black;
+  padding: 10px;
+  margin: 3px;
+  font-size: medium;
+}
+
 /*
   Keyframe animations
 */
