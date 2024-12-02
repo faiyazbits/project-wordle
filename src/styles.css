@@ -230,3 +230,48 @@ h1 {
     transform: translateY(0%);
   }
 }
+
+.keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px;
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+}
+
+.key {
+  width: 100px;
+  height: 50px;
+  text-align: center;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: default;
+  color: black;
+  background-color: lightgray;
+}
+
+.key.correct {
+  background-color: green;
+  color: white;
+}
+
+.key.misplaced {
+  background-color: yellow;
+  color: white;
+}
+
+.key.incorrect {
+  background-color: darkgray;
+  color: white;
+}
+
+.key.unused {
+  background-color: lightgray;
+  color: black;
+}
