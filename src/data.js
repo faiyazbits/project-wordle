@@ -5,7 +5,7 @@ export const WORDS = [
   'HEART',
   'WATER',
   'SIXTY',
-  'BOARD',
+  'BOARD',  
   'MONTH',
   'MUSIC',
   'PARTY',
@@ -49,4 +49,4 @@ export const WORDS = [
   'HONEY',
   'FLAKE',
   'SOUND',
-];
+]; 
