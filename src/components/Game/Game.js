@@ -1,60 +1,29 @@
 import React, { useState } from 'react';
 import Guess from '../Guess';
+import Guessslot from '../Guessslot';
 
-
-import { sample } from '../../utils';
-import { WORDS } from '../../data';
-
-
-const answer = sample(WORDS);
-console.info({ answer });
-
-function Guessgame() {
-  const [guess, setGuess] = useState('');
-  const [guessList, setGuessList] = useState([]);
-
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log('Entered guess:', guess);
-    if (guess) {
-      setGuessList([...guessList, guess]);
-      setGuess('');
-    }    
-  };
-
-  const handleChange = (event) => {
-    const upperCaseValue = event.target.value.toUpperCase();
-    setGuess(upperCaseValue); 
-  };
-
-  return (
-    <>
-      <form className="guess-input-wrapper" onSubmit={handleSubmit}>
-        <label htmlFor="guess-input">Enter guess:</label>
-        <input
-          id="guess-input"
-          type="text"
-          value={guess}
-          onChange={handleChange}
-        />
-      </form>
-      <Guess guesses={guessList} />
-    </>
-  );
-
-}
-
+import { NUM_OF_GUESSES_ALLOWED } from '../../constants'
 
 
 function Game() {
+  const [guesses, setGuesses] = useState([]);
+
+  const handleGuessSubmit = (guess) => {
+    setGuesses([...guesses, guess]);
+  };
+
+  const renderGuesses = () => {
+    return Array.from({ length: NUM_OF_GUESSES_ALLOWED }).map((_, index) => (
+      <Guessslot key={index} guess={guesses[index]} />
+    ));
+  };
+
   return (
     <div>
-      <Guessgame />
+      <Guess onGuessSubmit={handleGuessSubmit} />
+      <div className="guess-results">{renderGuesses()}</div>
     </div>
-
-   
-  )
+  );
 }
 
 export default Game;

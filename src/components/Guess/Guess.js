@@ -1,16 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-function GuessList({guesses}) {
+function Guess({ onGuessSubmit }) {
+  const [guess, setGuess] = useState('');
 
-return (
-    <div className="guess-results">
-      {guesses.map((guess, index) => (
-        <p key={`${guess}-${index}`} className="guess">
-          {guess}
-        </p>
-      ))}
-    </div>
+  const handleChange = (e) => {
+    setGuess(e.target.value.toUpperCase());
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (guess.length === 5) {
+      onGuessSubmit(guess);
+      setGuess('');
+    } else {
+      alert("Guess must be exactly 5 letters.");
+    }
+  };
+
+  return (
+    <form className="guess-input-wrapper" onSubmit={handleSubmit}>
+      <label htmlFor="guess-input">Enter guess:</label>
+      <input 
+        id="guess-input"
+        type="text"
+        value={guess}
+        onChange={handleChange}
+        maxLength={5} 
+      />
+    </form>
   );
 }
 
-export default GuessList;
+export default Guess;
