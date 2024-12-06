@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Guess({ onGuessSubmit }) {
+function Guess({ onGuessSubmit, disabled}) {
   const [guess, setGuess] = useState('');
 
   const handleChange = (e) => {
@@ -26,6 +26,8 @@ function Guess({ onGuessSubmit }) {
         value={guess}
         onChange={handleChange}
         maxLength={5} 
+        disabled={disabled}
+
       />
     </form>
   );
